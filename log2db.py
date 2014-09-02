@@ -36,19 +36,20 @@ data = {'start_command': None,
         'end_command': None
         }
 for line in fileinput.input():
+  columns = line.split(' ')
+  if len(columns) != 5:
+    continue
   try:
-    columns = line.split(' ')
     (head, component, cap, step, timestamp) = columns
   except ValueError as e:
     print e
     break
-  print (head, component, cap, step, timestamp)
   if head != 'Timestamp':
-    break
+    continue
   step = step.strip(':')
+  step = step.replace('-', '_')
   timestamp = int(timestamp)
-  if cap is u'start' and step is u'command' and data['end_command'] != None:
-    print repr(data)
+  if cap == 'start' and step == 'command' and data['end_command'] != None:
     c.execute(insertsql, data)
     data = {'start_command': None,
             'start_in_command': None,
@@ -59,10 +60,8 @@ for line in fileinput.input():
             }
   data[u'component'] = component
   data[cap + '_' + step] = timestamp
-  print repr(data)
 
 
-print repr(data)
 c.execute(insertsql, data)
 conn.commit()
 conn.close()
