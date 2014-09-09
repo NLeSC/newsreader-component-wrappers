@@ -1,5 +1,23 @@
 #!/bin/env python
 
+"""
+Converts stderr log from instrumented components into a sqlite table.
+
+
+Run component with:
+
+    for x in `ls testset/*xml` do
+    basename $x
+    cat $x | ~/components/EHU-tok/run.sh > output/`basename $x`.EHU-tok 2>> EHU-tok.log
+    done
+
+Convert log 2 db with:
+
+
+    python log2db.py < EHU-tok.log
+
+"""
+
 import fileinput
 import sqlite3
 conn = sqlite3.connect('timestamps.db')
