@@ -1,7 +1,6 @@
 #!/bin/env python
 
-"""
-Converts stderr log from instrumented components into a sqlite table.
+description = """Converts stderr log from instrumented components into a sqlite table.
 
 Log format is 'Timestamp [component] [cap] [step]: [timestamp]' where:
 * component, name of component
@@ -23,14 +22,25 @@ Convert log 2 db with:
     python log2db.py < EHU-pos.log
     python log2db.py < EHU-srl.log
 
-Creates a sqlite db called timestamps.db
+Creates a sqlite db called timestamps.db with the following tables:
+* timestamps, start/end (in milliseconds since epoch) of steps in a component
+* intervals, duration (in milliseconds) of each step in a component
+* avg_intervals, the average of each step in each component
 
 """
 
 import fileinput
 import sqlite3
-conn = sqlite3.connect('timestamps.db')
+import argparse
 
+parser = argparse.ArgumentParser(description=description,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+parser.add_argument('--database',
+                    default='timestamps.db',
+                    help='Sqlite database filename (default is timestamps.db)',
+                    )
+(args, inputs) = parser.parse_known_args()
+conn = sqlite3.connect(args.database)
 c = conn.cursor()
 
 metrics = set([
@@ -84,13 +94,12 @@ GROUP BY component
 c.execute(avg_interval_view)
 
 conn.commit()
-
 insertsql = 'INSERT INTO timestamps VALUES (:component,'
 insertsql += ','.join([':' + metric for metric in metrics])
 insertsql += ')'
 
 data = {metric: None for metric in metrics}
-for line in fileinput.input():
+for line in fileinput.input(inputs):
     columns = line.split(' ')
     if len(columns) != 5:
         continue
