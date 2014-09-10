@@ -11,4 +11,6 @@ if [ -z "$portInfo" ]
     sleep 180
 fi
 
-java -jar ${rootDir}/ixa-pipe-ned-1.0.jar -p 2020
+date +'Timestamp EHU-ned start command: %s%3N' 1>&2
+java -jar ${rootDir}/ixa-pipe-ned-1.0-timed.jar -p 2020
+date +'Timestamp EHU-ned end command: %s%3N' 1>&2
