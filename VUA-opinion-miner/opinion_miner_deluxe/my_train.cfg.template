@@ -1,0 +1,16 @@
+[general]
+output_folder = BASEDIR/opinion_miner_deluxe/mpqa_models_const_dep
+filename_training_list = /home/izquierdo/data/MPQA/10jan2014/mpqa_in_kaf_plain.list
+
+[valid_opinions]
+negative = sentiment-neg
+positive = sentiment-pos
+
+[crfsuite]
+path_to_binary = BASEDIR/crfsuite/bin/crfsuite
+parameters = -a lbfgs
+
+[svmlight]
+path_to_binary_learn = BASEDIR/svmlight/svm_learn
+path_to_binary_classify = BASEDIR/svmlight/svm_classify
+parameters = -c 0.1

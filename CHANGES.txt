@@ -1,0 +1,42 @@
+newsreader-hadoop-components
+============================
+
+Introduction
+------------
+The Newsreader components in this directory have been slightly altered for use in combination with the newsreader-hadoop project: https://github.com/sara-nl/newsreader-hadoop
+
+Changes
+-------
+All run.sh scripts have been modified and now, by default require two argumens: 
+
+1. the absolute path to the component on a Hadoop slave node
+3. the absolute path to a directory local to an Hadoop slave node that can be used for temporary or scratch files.
+
+Changes per module:
+
+EHU-tok: changed rootdir
+EHU-pos: changed rootdir
+VUA-multiwordtagger: changed rootdir
+EHU-nerc: changed rootdir
+VUA-opinion-miner: changed rootdir
+				   made pythonlib relative to component (i.e. moved newsread/opt dependency to component)
+				   made template of my_train.cfg that is initialized based on the component and scratch arguments
+				   clusterwide install of python-devel 
+				   clusterwide install of install python-lxml
+                   replaced dynamically compiled version of crfsuite with statically compiled version
+VUA-svm-wsd: changed rootdir
+			 made pythonlib relative to component (i.e. moved newsread/opt dependency to component)
+EHU-ned: changed rootdir
+	     created dbpedia on dbpedia.sara.cloudlet.sara.nl (16 core,64GB vm, load balanced 4 instances)
+EHU-srl: changed rootdir
+         removed exec statement
+FBK-time: changed rootdir
+		  change to relative paths
+		  created tmp
+VUA-eventcoref:changed rootdir
+			   change to rel paths
+VUA-factuality: changed rootdir 
+		     	clusterwide install of perl-XML-LibXML
+    			made opt lib relative (i.e. moved newsread/opt dependency to component)
+    			adapted perl scripts to accept paths to temporary files instead of using hardcoded files in current directory
+
