@@ -14,7 +14,7 @@ date +'Timestamp FBK-time start command: %s%3N' 1>&2
 cat $1 > $CHUNKIN
 cat $CHUNKIN | python from_CT_to_chunks.py | $JAVA_HOME/bin/java -jar NAFtoTXP.jar $FILETXP chunk+entity 
 
-date +'Timestamp FBK-time start_in_command: %s%3N' 1>&2
+date +'Timestamp FBK-time start in-command: %s%3N' 1>&2
 
 #echo "Saving... $FILETXP"
 tail -n +4 $FILETXP | awk -f english-rules > $FILEOUT
@@ -38,7 +38,7 @@ date +'Timestamp FBK-time end work: %s%3N' 1>&2
 $JAVA_HOME/bin/java -Dfile.encoding=UTF8 -cp "lib/textpro-time.jar:lib/commons-io-2.4.jar:lib/jdom.jar:lib/junit-4.5.jar" eu.fbk.textpro.main.TimeProNAF $CHUNKIN $FILETXP false "$BEGINTIME" 
 #$JAVA_HOME/bin/java -Dfile.encoding=UTF8 -cp "lib/textpro-time.jar:lib/commons-io-2.4.jar:lib/jdom.jar:lib/junit-4.5.jar" eu.fbk.textpro.main.TimeProNAFTester $CHUNKIN $FILETXP true
 
-date +'Timestamp FBK-time end in_command: %s%3N' 1>&2
+date +'Timestamp FBK-time end in-command: %s%3N' 1>&2
 date +'Timestamp FBK-time end command: %s%3N' 1>&2
 
 cat $FILETXP.out
