@@ -33,4 +33,4 @@ perl convertMalletToNAF.pl temp.naf malletoutput.sorted
 # Clean up
 rm temp.naf malletinput.tab malletoutput.txt malletoutput.sorted begintimestamp.txt
 
-date +'Timestamp VUA-factuality start command: %s%3N' 1>&2
+date +'Timestamp VUA-factuality end command: %s%3N' 1>&2
