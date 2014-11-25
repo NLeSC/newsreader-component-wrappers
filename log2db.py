@@ -46,10 +46,9 @@ c = conn.cursor()
 metrics = set([
                'start_command',
                'start_in_command',
+               'start_setup',
+               'end_setup',
                'start_work',
-               'start_translate2mate',
-               'start_buildmate',
-               'start_runmate',
                'end_work',
                'end_in_command',
                'end_command',
@@ -66,12 +65,12 @@ component
 ,start_command start
 ,(end_command - start_command) wall
 ,(start_in_command - start_command) start_executable
+,(end_setup - start_setup) setup
+,(start_work - start_in_command - (end_setup - start_setup)) kaf2native
 ,(start_work - start_in_command) setup_kaf2native
 ,(end_work - start_work) core
 ,(end_in_command - end_work) native2kaf_teardown
 ,(end_command - end_in_command) stop_executable
-,(start_runmate - start_buildmate) srl_build
-,(end_work - start_runmate) srl_core
 FROM timestamps
 '''
 c.execute(interval_view)
@@ -83,11 +82,11 @@ component
 ,avg(wall)
 ,avg(start_executable)
 ,avg(setup_kaf2native)
+,avg(setup)
+,avg(kaf2native)
 ,avg(core)
 ,avg(native2kaf_teardown)
 ,avg(stop_executable)
-,avg(srl_build)
-,avg(srl_core)
 FROM intervals
 GROUP BY component
 '''
@@ -98,7 +97,10 @@ insertsql = 'INSERT INTO timestamps VALUES (:component,'
 insertsql += ','.join([':' + metric for metric in metrics])
 insertsql += ')'
 
-data = {metric: None for metric in metrics}
+data = {}
+for metric in metrics:
+  data[metric] = None
+
 for line in fileinput.input(inputs):
     columns = line.split(' ')
     if len(columns) != 5:
@@ -119,7 +121,9 @@ for line in fileinput.input(inputs):
     timestamp = int(timestamp)
     if column == 'start_command' and data['end_command'] != None:
         c.execute(insertsql, data)
-        data = {metric: None for metric in metrics}
+        data = {}
+        for metric in metrics:
+            data[metric] = None
     data[u'component'] = component
     data[column] = timestamp
 
