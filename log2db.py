@@ -16,11 +16,25 @@ Run component with:
     cat $x | ~/components/EHU-tok/run.sh > output/`basename $x`.EHU-tok 2>> EHU-tok.log
     done
 
+Or all of them after each other:
+
+   for x in `ls testset/*xml`; do basename $x; cat $x | ~/components/EHU-tok/run.sh > output/`basename $x`.EHU-tok 2>> EHU-tok.log; done
+   for x in `ls output/*tok`; do basename $x; cat $x | ~/components/EHU-pos/run.sh > output/`basename $x`.EHU-pos 2>> EHU-pos.log; done
+   for x in `ls output/*pos`; do basename $x; cat $x | ~/components/VUA-multiwordtagger/run.sh > output/`basename $x`.VUA-mw 2>> VUA-mw.log; done
+   for x in `ls output/*mw`; do basename $x; cat $x | ~/components/EHU-nerc/run.sh > output/`basename $x`.EHU-nerc 2>> EHU-nerc.log; done
+   for x in `ls output/*nerc`; do basename $x; cat $x | ~/components/VUA-opinion-miner/run.sh > output/`basename $x`.VUA-om 2>> VUA-om.log; done
+   for x in `ls output/*om`; do basename $x; cat $x | ~/components/VUA-svm-wsd/run.sh > output/`basename $x`.VUA-wsd 2>> VUA-wsd.log; done
+   #start dbpedia server
+   for x in `ls output/*wsd`; do basename $x; cat $x | ~/components/EHU-ned/run.sh > output/`basename $x`.EHU-ned 2>> EHU-ned.log; done
+   #stop dbpedia server
+   for x in `ls output/*ned`; do basename $x; cat $x | ~/components/EHU-srl/run.sh > output/`basename $x`.EHU-srl 2>> EHU-srl.log; done
+   for x in `ls output/*srl`; do basename $x; cat $x | ~/components/FBK-time/run.sh > output/`basename $x`.FBK-time 2>> FBK-time.log; done
+   for x in `ls output/*time`; do basename $x; cat $x | ~/components/VUA-eventcoref/run.sh > output/`basename $x`.VUA-ecoref 2>> VUA-ecoref.log; done
+   for x in `ls output/*ecoref`; do basename $x; cat $x | ~/components/VUA-factuality/run.sh > output/`basename $x`.VUA-fact 2>> VUA-fact.log; done
+
 Convert log 2 db with:
 
     python log2db.py < EHU-tok.log
-    python log2db.py < EHU-pos.log
-    python log2db.py < EHU-srl.log
 
 Creates a sqlite db called timestamps.db with the following tables:
 * timestamps, start/end (in milliseconds since epoch) of steps in a component
