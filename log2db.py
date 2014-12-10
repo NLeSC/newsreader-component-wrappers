@@ -22,7 +22,7 @@ Or all of them after each other:
    for x in `ls output/*tok`; do basename $x; cat $x | ~/components/EHU-pos/run.sh > output/`basename $x`.EHU-pos 2>> EHU-pos.log; done
    for x in `ls output/*pos`; do basename $x; cat $x | ~/components/VUA-multiwordtagger/run.sh > output/`basename $x`.VUA-mw 2>> VUA-mw.log; done
    for x in `ls output/*mw`; do basename $x; cat $x | ~/components/EHU-nerc/run.sh > output/`basename $x`.EHU-nerc 2>> EHU-nerc.log; done
-   for x in `ls output/*nerc`; do basename $x; cat $x | ~/components/VUA-opinion-miner/run.sh > output/`basename $x`.VUA-om 2>> VUA-om.log; done
+   for x in `ls output/*nerc`; do basename $x; cat $x | timeout 60 ~/components/VUA-opinion-miner/run.sh > output/`basename $x`.VUA-om 2>> VUA-om.log; done
    for x in `ls output/*om`; do basename $x; cat $x | ~/components/VUA-svm-wsd/run.sh > output/`basename $x`.VUA-wsd 2>> VUA-wsd.log; done
    #start dbpedia server
    for x in `ls output/*wsd`; do basename $x; cat $x | ~/components/EHU-ned/run.sh > output/`basename $x`.EHU-ned 2>> EHU-ned.log; done
@@ -40,6 +40,11 @@ Creates a sqlite db called timestamps.db with the following tables:
 * timestamps, start/end (in milliseconds since epoch) of steps in a component
 * intervals, duration (in milliseconds) of each step in a component
 * avg_intervals, the average of each step in each component
+
+Fetch csv using:
+
+    sqlite3 -csv -header timestamps.db 'SELECT * FROM avg_intervals' > avg_intervals.csv
+    sqlite3 -csv -header timestamps.db 'SELECT * FROM intervals WHERE component' > intervals.csv
 
 """
 
